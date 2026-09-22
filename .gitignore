@@ -93,3 +93,5 @@ coverage_report/*
 target_docker/*
 
 examples/test/
+# fvm
+.fvm/

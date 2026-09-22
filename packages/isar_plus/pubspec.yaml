@@ -20,7 +20,7 @@ environment:
   sdk: ">=3.7.0 <4.0.0"
 
 dependencies:
-  analyzer: ">=12.1.0 <14.0.0"
+  analyzer: ">=12.1.0 <15.0.0"
   build: ^4.0.6
   ffi: ^2.2.0
   json_annotation: ^4.12.0
@@ -31,7 +31,23 @@ dependencies:
 
 dev_dependencies:
   build_test: ^3.5.15
-  ffigen: ^20.1.1
+  ffigen: ^22.0.0
   flutter_lints: ^6.0.0
   test: ">=1.24.0 <2.0.0"
-  very_good_analysis: ^10.2.0
+  very_good_analysis: ^11.0.0
+
+dependency_overrides:
+  # The `analyzer: ">=12.1.0 <15.0.0"` constraint above already permits
+  # 14.4.0, but nothing in the graph naturally selects past 13.3.0
+  # without forcing it — verified empirically (`dart pub get` alone
+  # resolves to 13.3.0; an explicit override is the only way to reach
+  # 14.4.0). No other package needed a version change to accommodate
+  # this, so it's a straightforward pin-forward, not a conflict workaround.
+  analyzer: 14.4.0
+  # dart_style is transitive (pulled in by build_runner/build_test's own
+  # deps) and was locked at 3.1.8, which predates analyzer 14.x's AST
+  # shape (its formatter visitor breaks on FieldFormalParameter et al.
+  # under 14.4.0 — verified by the generator's own tests failing to
+  # compile without this). 3.1.13 declares `analyzer: >=13.1.0 <15.0.0`
+  # and passes the same tests, so force it forward too.
+  dart_style: 3.1.13
