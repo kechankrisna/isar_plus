@@ -23,7 +23,17 @@ abstract class Isar {
   static const int defaultMaxSizeMiB = 128;
 
   /// The current Isar version.
-  static const String version = '0.0.0-placeholder';
+  ///
+  /// Kept in sync with the real published `isar_plus_flutter_libs` native
+  /// binary version this fork's isar_plus is paired with (see mylekha's
+  /// pubspec.yaml: isar_plus comes from this fork via git, but
+  /// isar_plus_flutter_libs stays on pub.dev for its real native binary —
+  /// this constant is what `native.dart` checks the loaded Core binary's
+  /// version against). Normally this file's "0.0.0-placeholder" is
+  /// substituted by isar_plus's own CI release pipeline
+  /// (.github/workflows/release.yaml); consuming raw git source skips that
+  /// pipeline entirely, so it's set by hand here to the same real version.
+  static const String version = '1.3.9';
 
   /// Use this value for the `directory` parameter to create an in-memory
   /// database.
