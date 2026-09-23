@@ -6,7 +6,7 @@ repository: https://github.com/ahmtydn/isar
 homepage: https://github.com/ahmtydn/isar
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: '>=3.9.2 <4.0.0'
   flutter: ">=3.24.0"
 
 dependencies:

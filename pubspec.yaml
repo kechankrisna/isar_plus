@@ -2,7 +2,7 @@ name: isar_plus_workspace
 publish_to: none
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: ">=3.9.2 <4.0.0"
 
 workspace:
   - packages/isar_plus
@@ -13,7 +13,16 @@ workspace:
   - examples/pub
 
 dev_dependencies:
-  melos: ^7.8.0
+  melos: ^8.9.0
+
+dependency_overrides:
+  # melos ^8.9.0 requires cli_util >=0.5.0 <0.7.0, but ffigen 22.0.0 (the
+  # latest) still declares cli_util ^0.4.2, so plain resolution fails.
+  # ffigen only imports `cli_util/cli_logging.dart`'s `Ansi` class, which
+  # is unchanged between 0.4.2 and 0.6.0 (the only breaking change in that
+  # range is to `sdkPath`, which ffigen never touches) — verified by
+  # diffing the two versions' source. Safe to force forward.
+  cli_util: 0.6.0
 
 melos:
   scripts:
@@ -24,8 +33,8 @@ melos:
       run: dart format .
       description: "Format all Dart code across packages"
     analyze:
-      run: flutter analyze
       exec:
+        command: flutter analyze
         concurrency: 1
         failFast: false
       description: "Run flutter analyze on all packages"
@@ -57,8 +66,8 @@ melos:
       run: bash tool/generate_bindings.sh
       description: "Regenerate Rust→C bindings (cbindgen) and Dart FFI bindings (ffigen)"
     gen:dart:
-      run: flutter pub run build_runner build --delete-conflicting-outputs
       exec:
+        command: flutter pub run build_runner build --delete-conflicting-outputs
         concurrency: 1
       description: "Run Dart code generation (build_runner)"
       packageFilters:
@@ -68,24 +77,24 @@ melos:
       run: bash tool/prepare_tests.sh
       description: "Prepare isar_plus_test (generate test files + build_runner)"
     test:unit:
-      run: dart test
       exec:
+        command: dart test
         concurrency: 1
       description: "Run Dart unit tests (isar_plus generator tests)"
       packageFilters:
         scope:
           - isar_plus
     test:flutter:
-      run: flutter test -j 1
       exec:
+        command: flutter test -j 1
         concurrency: 1
       description: "Run Flutter tests in isar_plus_test"
       packageFilters:
         scope:
           - isar_plus_test
     test:web:
-      run: dart test -p chrome
       exec:
+        command: dart test -p chrome
         concurrency: 1
       description: "Run web (Chrome) tests in isar_plus_test"
       packageFilters:
@@ -95,8 +104,8 @@ melos:
       run: cargo test
       description: "Run Rust unit tests (cargo test in workspace root)"
     publish:dry:
-      run: dart pub publish --dry-run
       exec:
+        command: dart pub publish --dry-run
         concurrency: 1
       description: "Dry-run pub.dev publish for all public packages"
       packageFilters:
